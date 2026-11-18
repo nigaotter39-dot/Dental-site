@@ -6,22 +6,20 @@ export default function DentalSampleSite() {
   const [config, setConfig] = useState({
     clinic: "A A Dental & Aesthetic Clinic",
     city: "Islamabad",
-    area: "Islamabad / Rawalpindi",
+    area: "Sector F-6 / G-9, Islamabad",
     hours: "Mon–Sat: 11:00 AM – 9:00 PM",
     phone: "+92 300 0000000",
     whatsapp: "923000000000",
     rating: "4.9",
     reviews: "180+",
     patients: "2,500+",
-    mapUrl: "https://www.google.com/maps?q=Islamabad,Pakistan&output=embed",
   });
 
-  const [activeTab, setActiveTab] = useState('smile');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeFaq, setActiveFaq] = useState(null);
+  const [activeFaq, setActiveFaq] = useState(0);
+  const [activeCategory, setActiveCategory] = useState("all");
 
   useEffect(() => {
-    // Dynamic URL Parameter Engine for rapid client pitching
     const params = new URLSearchParams(window.location.search);
     setConfig((prev) => ({
       clinic: params.get("clinic") || prev.clinic,
@@ -33,319 +31,277 @@ export default function DentalSampleSite() {
       rating: params.get("rating") || prev.rating,
       reviews: params.get("reviews") || prev.reviews,
       patients: params.get("patients") || prev.patients,
-      mapUrl: params.get("map") || prev.mapUrl,
     }));
   }, []);
 
   const buildWhatsAppLink = (message) =>
     `https://wa.me/${config.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
 
-  const toggleFaq = (idx) => {
-    setActiveFaq(activeFaq === idx ? null : idx);
-  };
+  const treatments = [
+    {
+      id: "refresh",
+      category: "dental",
+      name: "Complete Smile Refresh",
+      time: "Single 45-Min Session",
+      price: "PKR 8,500",
+      desc: "Comprehensive oral prophylaxis, ultrasonic scaling, stubborn stain removal & cold laser desensitizing whitening.",
+      features: [
+        "Deep plaque, calculus & smoking/tea stain removal",
+        "Gentle, enamel-safe cold laser whitening",
+        "Full oral wellness evaluation & gum health check",
+      ],
+      popular: false,
+    },
+    {
+      id: "hollywood",
+      category: "cosmetic",
+      name: "Hollywood Smile & Veneers",
+      time: "Custom Treatment Plan",
+      price: "PKR 15,000",
+      priceNote: "Initial Diagnostic & 3D Simulation",
+      desc: "Complete aesthetic redesign using 3D digital oral mapping, ultra-thin porcelain veneers, and clear aligner planning.",
+      features: [
+        "3D intraoral digital scan & live smile simulator",
+        "Evaluation for ultra-thin 0.3mm Zirconia / E-Max veneers",
+        "Clear aligner invisible teeth-straightening plan",
+      ],
+      popular: true,
+    },
+    {
+      id: "hydrafacial",
+      category: "aesthetic",
+      name: "Medical HydraFacial Glow",
+      time: "60-Minute Treatment",
+      price: "PKR 10,000",
+      desc: "Clinical vortex vacuum pore cleansing, painless blackhead extraction, followed by active antioxidant & hyaluronic infusion.",
+      features: [
+        "Vortex exfoliation & sebum extraction",
+        "Hyaluronic acid & peptide nourishment infusion",
+        "LED light therapy for rapid skin rejuvenation",
+      ],
+      popular: false,
+    },
+  ];
+
+  const filteredTreatments = activeCategory === "all" 
+    ? treatments 
+    : treatments.filter(t => t.category === activeCategory);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] text-[#1c1917] font-sans antialiased selection:bg-[#0D5C53] selection:text-white overflow-x-hidden">
-      
-      {/* 1. TOP CLINICAL STATUS LEDGER */}
-      <div className="border-b border-stone-200 bg-[#F4F0EA] text-[11px] font-mono tracking-wider py-2 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4 text-stone-600">
-          <div className="flex items-center gap-3">
-            <span className="text-[#0D5C53] font-bold">LOCATION: {config.area.toUpperCase()}</span>
-            <span className="text-stone-300 hidden sm:inline">|</span>
-            <span>CLINICAL HOURS: {config.hours.toUpperCase()}</span>
+    <div className="min-h-screen bg-[#0B1120] text-slate-100 font-sans antialiased selection:bg-teal-500 selection:text-white pb-20 sm:pb-0">
+
+      {/* TOP ANNOUNCEMENT BAR */}
+      <div className="bg-[#0F172A] border-b border-slate-800/80 text-xs py-2.5 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-400 text-center sm:text-left">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-4">
+            <span className="inline-flex items-center gap-1.5 text-teal-400 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+              {config.area}
+            </span>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span>{config.hours}</span>
           </div>
-          <div className="flex items-center gap-3">
-            <span>STERILIZATION: <strong className="text-stone-900 font-bold">CLASS-B AUTOCLAVE</strong></span>
-            <span className="text-stone-300 hidden sm:inline">|</span>
-            <span className="text-[#0D5C53] font-bold">VERIFIED RATING: {config.rating} / 5.0</span>
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <span className="text-amber-400 flex items-center gap-1">
+              ★ {config.rating} <span className="text-slate-400">({config.reviews} patient reviews)</span>
+            </span>
+            <span className="text-slate-600 hidden md:inline">•</span>
+            <span className="text-slate-300 hidden md:inline">Hospital-Grade Class-B Autoclave</span>
           </div>
         </div>
       </div>
 
-      {/* 2. REFINED ATELIER NAVIGATION */}
-      <nav className="border-b border-stone-200 bg-[#FAF8F5]/95 sticky top-0 z-50 backdrop-blur-md px-4 sm:px-8 py-4">
+      {/* HEADER / NAVIGATION */}
+      <nav className="sticky top-0 z-40 bg-[#0B1120]/95 backdrop-blur-md border-b border-slate-800/90 px-4 sm:px-8 py-3.5 sm:py-4 transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <a href="#" className="flex items-baseline gap-3">
-            <span className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-[#15191E] uppercase">
-              {config.clinic.split(" ")[0]} <span className="italic font-normal text-[#0D5C53]">{config.clinic.split(" ").slice(1).join(" ")}</span>
-            </span>
+          <a href="#" className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-600 to-emerald-400 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-teal-900/30">
+              ✦
+            </div>
+            <div>
+              <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white block leading-tight">
+                {config.clinic.split(" ")[0]} <span className="text-teal-400">{config.clinic.split(" ").slice(1, 3).join(" ")}</span>
+              </span>
+              <span className="text-[11px] text-slate-400 tracking-wider uppercase block font-medium">
+                Dental & Facial Aesthetics
+              </span>
+            </div>
           </a>
 
           {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-stone-500">
-            <a href="#philosophy" className="hover:text-stone-900 transition-colors">01. Standard</a>
-            <a href="#treatments" className="hover:text-stone-900 transition-colors">02. Treatment Menu</a>
-            <a href="#protocol" className="hover:text-stone-900 transition-colors">03. 3-Step Protocol</a>
-            <a href="#suites" className="hover:text-stone-900 transition-colors">04. Operatory Suites</a>
-            <a href="#location" className="hover:text-stone-900 transition-colors">05. Location</a>
+          <div className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-300">
+            <a href="#services" className="hover:text-teal-400 transition-colors">Treatments</a>
+            <a href="#why-us" className="hover:text-teal-400 transition-colors">Why Choose Us</a>
+            <a href="#protocol" className="hover:text-teal-400 transition-colors">Our Process</a>
+            <a href="#facility" className="hover:text-teal-400 transition-colors">Our Clinic</a>
+            <a href="#faq" className="hover:text-teal-400 transition-colors">FAQ</a>
           </div>
 
           <div className="flex items-center gap-3">
             <a
-              href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book an appointment with your senior consultant.`)}
+              href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book a consultation.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-[#15191E] bg-[#15191E] hover:bg-[#0D5C53] hover:border-[#0D5C53] text-white font-mono text-xs font-bold px-5 py-2.5 uppercase tracking-wider transition-all duration-200"
+              className="hidden sm:inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition-all duration-200"
             >
-              Consult via WhatsApp →
+              <span>Book Appointment</span>
+              <span>→</span>
             </a>
 
-            {/* Mobile Hamburger */}
+            {/* Mobile Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-stone-600 hover:text-stone-900 font-mono text-sm border border-stone-300"
+              className="lg:hidden p-2.5 rounded-xl text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 transition-colors"
               aria-label="Toggle navigation"
             >
-              {mobileMenuOpen ? '✕' : '☰'}
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Navigation Dropdown */}
         {mobileMenuOpen && (
-          <div className="lg:hidden mt-3 pt-3 border-t border-stone-200 flex flex-col gap-2 font-mono text-xs uppercase tracking-wider text-stone-700 pb-2">
-            <a href="#philosophy" onClick={() => setMobileMenuOpen(false)} className="py-2 px-2 hover:bg-stone-100">01. The Standard</a>
-            <a href="#treatments" onClick={() => setMobileMenuOpen(false)} className="py-2 px-2 hover:bg-stone-100">02. Treatment Menu</a>
-            <a href="#protocol" onClick={() => setMobileMenuOpen(false)} className="py-2 px-2 hover:bg-stone-100">03. 3-Step Protocol</a>
-            <a href="#suites" onClick={() => setMobileMenuOpen(false)} className="py-2 px-2 hover:bg-stone-100">04. Operatory Suites</a>
-            <a href="#location" onClick={() => setMobileMenuOpen(false)} className="py-2 px-2 hover:bg-stone-100">05. Location & Concierge</a>
+          <div className="lg:hidden mt-3 pt-3 border-t border-slate-800/80 flex flex-col gap-1 text-sm font-medium text-slate-200 pb-3">
+            <a 
+              href="#services" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="py-2.5 px-3 rounded-lg hover:bg-slate-800/60 hover:text-teal-400"
+            >
+              Treatments & Pricing
+            </a>
+            <a 
+              href="#why-us" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="py-2.5 px-3 rounded-lg hover:bg-slate-800/60 hover:text-teal-400"
+            >
+              Why Choose Us
+            </a>
+            <a 
+              href="#protocol" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="py-2.5 px-3 rounded-lg hover:bg-slate-800/60 hover:text-teal-400"
+            >
+              3-Step Painless Process
+            </a>
+            <a 
+              href="#facility" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="py-2.5 px-3 rounded-lg hover:bg-slate-800/60 hover:text-teal-400"
+            >
+              Clinic & Operatory
+            </a>
+            <a 
+              href="#faq" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="py-2.5 px-3 rounded-lg hover:bg-slate-800/60 hover:text-teal-400"
+            >
+              Frequently Asked Questions
+            </a>
+            <div className="pt-2 px-1">
+              <a
+                href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book an appointment.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 bg-teal-500 text-slate-950 font-bold py-3 rounded-xl text-center"
+              >
+                Chat on WhatsApp Directly →
+              </a>
+            </div>
           </div>
         )}
       </nav>
 
-      {/* 3. HERO SECTION: Architectural Editorial Split */}
-      <header className="border-b border-stone-200">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 min-h-[600px]">
-          
-          {/* Left Column: Manifesto & Call to Action */}
-          <div className="lg:col-span-7 p-6 sm:p-12 lg:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-stone-200">
-            <div>
-              <div className="font-mono text-xs text-[#0D5C53] uppercase tracking-widest mb-6">
-                // BESPOKE SMILE & FACIAL ARCHITECTURE • {config.city.toUpperCase()}
+      {/* HERO SECTION */}
+      <section className="relative overflow-hidden pt-8 pb-16 sm:py-20 lg:py-24 border-b border-slate-800">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(13,148,136,0.15),rgba(255,255,255,0))] pointer-events-none" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            {/* Left Content */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-950/60 border border-teal-500/30 text-teal-300 text-xs font-semibold tracking-wide">
+                <span>✦</span>
+                <span>Painless Dentistry & Clinical Facial Aesthetics</span>
               </div>
 
-              <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-normal text-[#15191E] leading-[1.05] tracking-tight mb-8">
-                The Architecture of a <br />
-                <span className="italic font-light text-[#0D5C53]">Flawless, Painless</span> <br />
-                Smile in One Visit.
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
+                Get the Confident, <br className="hidden sm:inline" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-teal-400 to-emerald-300">
+                  Radiant Smile
+                </span> You Deserve.
               </h1>
 
-              <p className="text-stone-600 text-base sm:text-lg max-w-xl font-normal leading-relaxed mb-10">
-                Gentle clinical precision, imported laser enamel technology, and specialized facial aesthetics. Designed specifically for discerning patients who demand natural elegance without waiting rooms or discomfort.
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                Experience gentle dental care with imported laser technology, digital 3D scans, and specialized aesthetic care. Zero discomfort, crystal-clear pricing, and visible results in a single visit.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              {/* CTAs */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
                 <a
-                  href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book an appointment. Please share your earliest available slot.`)}
+                  href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book an appointment with your dental specialist.`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#0D5C53] hover:bg-[#093f39] text-white font-mono text-xs uppercase font-bold tracking-widest py-4 px-8 text-center transition-colors shadow-sm"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-sm sm:text-base px-8 py-4 rounded-xl shadow-xl shadow-teal-500/25 hover:shadow-teal-500/40 transition-all duration-200"
                 >
-                  Book 1-Click WhatsApp Consult →
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                  </svg>
+                  <span>Chat on WhatsApp</span>
                 </a>
+
                 <a
-                  href="#treatments"
-                  className="border border-stone-300 hover:border-stone-800 text-stone-700 hover:text-stone-900 font-mono text-xs uppercase tracking-widest py-4 px-6 text-center transition-colors"
+                  href="#services"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 text-slate-200 font-semibold text-sm sm:text-base px-6 py-4 rounded-xl transition-colors"
                 >
-                  View Treatment Menu ↓
+                  View Treatments & Fees
                 </a>
               </div>
-            </div>
 
-            {/* Bottom Metadata Ledger */}
-            <div className="grid grid-cols-3 gap-4 pt-10 mt-10 border-t border-stone-200 font-mono text-left">
-              <div>
-                <span className="text-stone-400 text-[10px] block uppercase">Clinical Record</span>
-                <span className="text-[#15191E] text-base sm:text-lg font-bold">{config.patients}</span>
-                <span className="text-stone-500 text-[10px] block">Smiles Restored</span>
-              </div>
-              <div>
-                <span className="text-stone-400 text-[10px] block uppercase">Google Ledger</span>
-                <span className="text-[#15191E] text-base sm:text-lg font-bold">{config.rating} / 5.0</span>
-                <span className="text-stone-500 text-[10px] block">{config.reviews} Reviews</span>
-              </div>
-              <div>
-                <span className="text-stone-400 text-[10px] block uppercase">Pain Protocol</span>
-                <span className="text-[#0D5C53] text-base sm:text-lg font-bold">0 / 10 SCALE</span>
-                <span className="text-stone-500 text-[10px] block">Gentle Anesthesia</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: Full-Height Specialist Doctor Frame */}
-          <div className="lg:col-span-5 relative bg-stone-900 overflow-hidden min-h-[360px] lg:min-h-full">
-            <img 
-              src="/images/specialist-doctor.jpg" 
-              alt="Senior dental specialist in surgical operatory" 
-              className="w-full h-full object-cover object-top contrast-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-            
-            <div className="absolute bottom-6 left-6 right-6 font-mono text-xs bg-white/95 border border-stone-200 p-4">
-              <span className="text-[#0D5C53] block font-bold text-[11px] mb-0.5">LEAD CLINICIAN PROTOCOL</span>
-              <p className="text-stone-600 text-[11px] leading-tight font-sans">
-                Every assessment is personally conducted by certified cosmetic dental surgeons and facial aesthetic physicians.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </header>
-
-      {/* 4. SECTION 01: THE CLINICAL STANDARD (Brutalist 3-Column Ledger) */}
-      <section id="philosophy" className="border-b border-stone-200 bg-[#F4F0EA]">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-stone-200">
-          
-          <div className="p-8 sm:p-10">
-            <span className="font-mono text-xs text-[#0D5C53] font-bold block mb-3">PILLAR 01 // ENAMEL PRESERVATION</span>
-            <h3 className="font-serif text-2xl sm:text-3xl font-normal text-stone-900 mb-3">Micro-Conservative Dentistry</h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              We never aggressively file down healthy teeth. Our veneers and bonding rely on ultra-thin 0.3mm ceramic shells and bioactive bonding agents that preserve your biological tooth structure for life.
-            </p>
-          </div>
-
-          <div className="p-8 sm:p-10">
-            <span className="font-mono text-xs text-[#0D5C53] font-bold block mb-3">PILLAR 02 // ZERO SENSITIVITY WHITENING</span>
-            <h3 className="font-serif text-2xl sm:text-3xl font-normal text-stone-900 mb-3">Targeted Laser Phototherapy</h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              Standard peroxide gels cause excruciating post-whitening electric shocks. Our calibrated laser whitening system breaks stubborn stains at molecular depth with desensitizing minerals applied simultaneously.
-            </p>
-          </div>
-
-          <div className="p-8 sm:p-10">
-            <span className="font-mono text-xs text-[#0D5C53] font-bold block mb-3">PILLAR 03 // TRANSPARENT ACCOUNTABILITY</span>
-            <h3 className="font-serif text-2xl sm:text-3xl font-normal text-stone-900 mb-3">Fixed Pricing, No Hidden Fees</h3>
-            <p className="text-stone-600 text-sm leading-relaxed">
-              Every procedure cost is quoted upfront before treatment begins. No mystery add-ons, no surprise x-ray charges, and direct WhatsApp invoice confirmation.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 5. SECTION 02: THE 3-STEP PROTOCOL (Destroys Patient Anxiety) */}
-      <section id="protocol" className="border-b border-stone-200 py-16 sm:py-20 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-stone-200 gap-4">
-            <div>
-              <span className="font-mono text-xs text-[#0D5C53] uppercase tracking-widest block mb-1">
-                // ANXIETY-FREE PATIENT JOURNEY
-              </span>
-              <h2 className="font-serif text-4xl sm:text-5xl font-normal text-stone-900">
-                The 3-Step Smile Protocol
-              </h2>
-            </div>
-            <p className="font-mono text-xs text-stone-500">
-              [ ZERO MESSY IMPRESSION GOOP • 4K DIGITAL SIMULATION ]
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 font-mono">
-            
-            <div className="border border-stone-200 bg-white p-8">
-              <span className="text-stone-400 text-xs block mb-2">STEP // 01</span>
-              <h4 className="font-serif text-2xl font-normal text-stone-900 mb-3 font-sans">
-                3D Intraoral Scanning
-              </h4>
-              <p className="text-stone-600 text-xs leading-relaxed font-sans">
-                Our optical wand takes 6,000 frames per second to map your bite with sub-millimeter precision. No gagging on sticky impression paste.
-              </p>
-            </div>
-
-            <div className="border border-stone-200 bg-white p-8">
-              <span className="text-stone-400 text-xs block mb-2">STEP // 02</span>
-              <h4 className="font-serif text-2xl font-normal text-stone-900 mb-3 font-sans">
-                Live Outcome Preview
-              </h4>
-              <p className="text-stone-600 text-xs leading-relaxed font-sans">
-                Before we touch your teeth, review your custom smile outcome on a high-definition screen. You approve your tooth shape, shade, and alignment.
-              </p>
-            </div>
-
-            <div className="border border-stone-200 bg-white p-8">
-              <span className="text-stone-400 text-xs block mb-2">STEP // 03</span>
-              <h4 className="font-serif text-2xl font-normal text-stone-900 mb-3 font-sans">
-                Gentle Single-Visit Delivery
-              </h4>
-              <p className="text-stone-600 text-xs leading-relaxed font-sans">
-                Relax in ergonomic memory-foam dental suites with noise-canceling audio. Walk out the exact same day with immediate, radiantly transformed results.
-              </p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 6. SECTION 03: CLINICAL SUITES & REAL OUTCOME MATRIX (Using 4 Photos) */}
-      <section id="suites" className="border-b border-stone-200">
-        <div className="max-w-7xl mx-auto">
-          
-          <div className="p-6 sm:p-8 border-b border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs">
-            <span className="text-[#0D5C53] font-bold uppercase tracking-widest">
-              // FACILITY & CLINICAL OUTCOME EVIDENCE
-            </span>
-            <span className="text-stone-500">
-              SECTOR F-6 / G-9 COMMERCIAL • STRICT ISO-CERTIFIED ENVIRONMENT
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-stone-200">
-            
-            {/* Cell 1: Smile Outcome */}
-            <div className="relative h-80 sm:h-96 overflow-hidden bg-stone-100 group border-b border-stone-200">
-              <img 
-                src="/images/smile-hero.jpg" 
-                alt="Whitened teeth clinical outcome" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent p-6 flex flex-col justify-end font-mono">
-                <span className="text-[10px] text-teal-300 uppercase font-bold tracking-widest mb-1">CLINICAL RESULT</span>
-                <h4 className="font-serif text-2xl font-normal text-white">Laser Whitening & Micro-Bonding</h4>
-                <p className="text-stone-300 text-xs mt-1 font-sans">Enamel-safe stain removal achieved in a single 45-minute clinical appointment.</p>
+              {/* Trust Indicators */}
+              <div className="grid grid-cols-3 gap-3 pt-6 border-t border-slate-800/80">
+                <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 text-left">
+                  <div className="text-xl sm:text-2xl font-bold text-white">{config.patients}</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Smiles Restored</div>
+                </div>
+                <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 text-left">
+                  <div className="text-xl sm:text-2xl font-bold text-amber-400">{config.rating} ★</div>
+                  <div className="text-xs text-slate-400 mt-0.5">{config.reviews} Reviews</div>
+                </div>
+                <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800/60 text-left">
+                  <div className="text-xl sm:text-2xl font-bold text-teal-400">100%</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Sterilized & Safe</div>
+                </div>
               </div>
             </div>
 
-            {/* Cell 2: Modern Operatory Suite */}
-            <div className="relative h-80 sm:h-96 overflow-hidden bg-stone-100 group border-b border-stone-200">
-              <img 
-                src="/images/modern-operatory.jpg" 
-                alt="Private modern operatory suite" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent p-6 flex flex-col justify-end font-mono">
-                <span className="text-[10px] text-teal-300 uppercase font-bold tracking-widest mb-1">OPERATORY SUITE</span>
-                <h4 className="font-serif text-2xl font-normal text-white">Tranquil Private Treatment Room</h4>
-                <p className="text-stone-300 text-xs mt-1 font-sans">Imported ergonomic chair, low-radiation sensors, and multi-stage air purification.</p>
-              </div>
-            </div>
-
-            {/* Cell 3: Procedure In Action */}
-            <div className="relative h-80 sm:h-96 overflow-hidden bg-stone-100 group">
-              <img 
-                src="/images/clinical-procedure.jpg" 
-                alt="Doctor performing delicate dental procedure" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent p-6 flex flex-col justify-end font-mono">
-                <span className="text-[10px] text-teal-300 uppercase font-bold tracking-widest mb-1">SURGICAL PRECISION</span>
-                <h4 className="font-serif text-2xl font-normal text-white">Optical Loupe Magnification</h4>
-                <p className="text-stone-300 text-xs mt-1 font-sans">Every restoration is completed under 3.5x magnification for seamless margins.</p>
-              </div>
-            </div>
-
-            {/* Cell 4: Specialist Consultation */}
-            <div className="relative h-80 sm:h-96 overflow-hidden bg-stone-100 group">
-              <img 
-                src="/images/specialist-doctor.jpg" 
-                alt="Dental specialist ready for patient consult" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent p-6 flex flex-col justify-end font-mono">
-                <span className="text-[10px] text-teal-300 uppercase font-bold tracking-widest mb-1">CONSULTATION</span>
-                <h4 className="font-serif text-2xl font-normal text-white">Comprehensive Diagnostic Assessment</h4>
-                <p className="text-stone-300 text-xs mt-1 font-sans">One-on-one consultation addressing your exact aesthetic desires and bite function.</p>
+            {/* Right Card Image */}
+            <div className="lg:col-span-5">
+              <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 shadow-2xl shadow-slate-950/80 group">
+                <img 
+                  src="/images/specialist-doctor.jpg" 
+                  alt="Senior dental doctor in surgical operatory" 
+                  className="w-full h-80 sm:h-96 lg:h-[460px] object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                
+                <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-700/80">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-lg shrink-0">
+                      ✓
+                    </div>
+                    <div>
+                      <h4 className="text-white text-sm font-bold">Personalized Doctor Consultation</h4>
+                      <p className="text-slate-300 text-xs mt-0.5">Every patient is directly evaluated by senior dental surgeons.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -353,218 +309,170 @@ export default function DentalSampleSite() {
         </div>
       </section>
 
-      {/* 7. SECTION 04: TRANSPARENT TREATMENT PACKAGES (Architectural Ledger) */}
-      <section id="treatments" className="border-b border-stone-200 py-20 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto">
-          
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="font-mono text-xs text-[#0D5C53] uppercase tracking-widest block mb-2">
-              // TRANSPARENT CARE PACKAGES
-            </span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-normal text-stone-900">
-              Curated Treatment Menu
-            </h2>
-            <p className="text-stone-600 text-sm mt-3">
-              Direct booking via WhatsApp. Locked pricing with zero hidden clinical surcharges.
-            </p>
+      {/* THREE PILLARS SECTION */}
+      <section id="why-us" className="py-16 sm:py-20 bg-[#0F172A] border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <h2 className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-2">Why Discerning Patients Choose Us</h2>
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white">Modern Dentistry Designed For Comfort</h3>
+            <p className="text-slate-400 text-sm sm:text-base mt-3">We eliminate anxiety, pain, and uncertainty through modern technology.</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x border border-stone-200 bg-white">
-            
-            {/* Package 1 */}
-            <div className="p-8 sm:p-10 flex flex-col justify-between">
-              <div>
-                <div className="flex items-baseline justify-between mb-4 font-mono text-xs">
-                  <span className="text-[#0D5C53] font-bold">MENU // 01</span>
-                  <span className="text-stone-400">1 APPOINTMENT</span>
-                </div>
-
-                <h3 className="font-serif text-3xl font-normal text-stone-900 mb-2">
-                  Complete Smile Refresh
-                </h3>
-                <p className="text-xs text-stone-500 mb-6 leading-relaxed font-sans">
-                  Deep preventive hygiene, ultrasonic plaque removal, and gentle desensitizing laser whitening.
-                </p>
-
-                <div className="border-t border-b border-stone-200 py-6 mb-8 font-mono">
-                  <span className="text-3xl font-bold text-stone-900 block">PKR 8,500</span>
-                  <span className="text-xs text-stone-500 block mt-1">Full Clinical Session Included</span>
-                </div>
-
-                <ul className="space-y-3 font-mono text-xs text-stone-700 mb-8 font-sans">
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-[#0D5C53] font-bold mt-0.5">+</span>
-                    <span>Ultrasonic plaque, tartar & deep smoker/tea stain extraction</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-[#0D5C53] font-bold mt-0.5">+</span>
-                    <span>Enamel-safe high-precision laser whitening session</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-[#0D5C53] font-bold mt-0.5">+</span>
-                    <span>Comprehensive digital intraoral exam & gum screening</span>
-                  </li>
-                </ul>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800/90 hover:border-slate-700 transition-all space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center text-xl font-bold">
+                01
               </div>
-
-              <a
-                href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book the Complete Smile Refresh package (PKR 8,500). What slots are available?`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full block py-4 text-center font-mono text-xs uppercase font-bold tracking-wider bg-stone-100 hover:bg-[#15191E] text-stone-900 hover:text-white border border-stone-300 transition-colors"
-              >
-                Book Smile Refresh →
-              </a>
+              <h4 className="font-serif text-2xl font-bold text-white">Tooth Enamel Preservation</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                We believe in micro-conservative dentistry. We never aggressively grind healthy teeth. Our ultra-thin 0.3mm ceramic shells keep your natural teeth safe.
+              </p>
             </div>
 
-            {/* Package 2: Highlighted */}
-            <div className="p-8 sm:p-10 flex flex-col justify-between bg-[#15191E] text-white relative">
-              <div className="absolute top-0 right-0 bg-[#0D5C53] text-teal-100 font-mono text-[10px] font-bold uppercase tracking-widest px-3.5 py-1">
-                FLAGSHIP MAKE-OVER
+            <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800/90 hover:border-slate-700 transition-all space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center text-xl font-bold">
+                02
               </div>
-
-              <div>
-                <div className="flex items-baseline justify-between mb-4 font-mono text-xs">
-                  <span className="text-teal-300 font-bold">MENU // 02</span>
-                  <span className="text-stone-400">CUSTOM CAD/CAM</span>
-                </div>
-
-                <h3 className="font-serif text-3xl font-normal text-white mb-2">
-                  Hollywood Smile & Alignment
-                </h3>
-                <p className="text-xs text-stone-400 mb-6 leading-relaxed font-sans">
-                  Full aesthetic transformation consultation, including 3D realistic smile simulation, Zirconia veneers & clear aligner mapping.
-                </p>
-
-                <div className="border-t border-b border-stone-700 py-6 mb-8 font-mono">
-                  <span className="text-3xl font-bold text-teal-300 block">PKR 15,000</span>
-                  <span className="text-xs text-stone-400 block mt-1">Full Diagnostic Consult & Simulation</span>
-                </div>
-
-                <ul className="space-y-3 font-mono text-xs text-stone-300 mb-8 font-sans">
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-teal-400 font-bold mt-0.5">+</span>
-                    <span>3D digital optical scan & instant photorealistic smile preview</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-teal-400 font-bold mt-0.5">+</span>
-                    <span>Evaluation for ultra-thin Zirconia porcelain veneers & invisible aligners</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-teal-400 font-bold mt-0.5">+</span>
-                    <span>Bespoke treatment timeline with flexible stage installments</span>
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href={buildWhatsAppLink(`Hi ${config.clinic}! I'm interested in the Hollywood Smile & Alignment Consult. Can we schedule an assessment?`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full block py-4 text-center font-mono text-xs uppercase font-bold tracking-wider bg-[#0D5C53] hover:bg-teal-500 text-white transition-colors"
-              >
-                Book Smile Makeover Consult →
-              </a>
+              <h4 className="font-serif text-2xl font-bold text-white">Zero-Sensitivity Whitening</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Ordinary whitening burns nerves. Our imported cold laser photo-activation removes years of coffee and tea stains pain-free with protective minerals applied.
+              </p>
             </div>
 
-            {/* Package 3 */}
-            <div className="p-8 sm:p-10 flex flex-col justify-between">
-              <div>
-                <div className="flex items-baseline justify-between mb-4 font-mono text-xs">
-                  <span className="text-[#0D5C53] font-bold">MENU // 03</span>
-                  <span className="text-stone-400">CLINICAL FACIAL</span>
-                </div>
-
-                <h3 className="font-serif text-3xl font-normal text-stone-900 mb-2">
-                  Clinical Skin & Facial Glow
-                </h3>
-                <p className="text-xs text-stone-500 mb-6 leading-relaxed font-sans">
-                  Medical-grade HydraFacial, deep sebum extraction, and dermal infusion to restore natural youthful radiance.
-                </p>
-
-                <div className="border-t border-b border-stone-200 py-6 mb-8 font-mono">
-                  <span className="text-3xl font-bold text-stone-900 block">PKR 10,000</span>
-                  <span className="text-xs text-stone-500 block mt-1">60-Minute Specialist Session</span>
-                </div>
-
-                <ul className="space-y-3 font-mono text-xs text-stone-700 mb-8 font-sans">
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-[#0D5C53] font-bold mt-0.5">+</span>
-                    <span>Medical-grade vortex vacuum pore extraction & dead skin exfoliation</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-[#0D5C53] font-bold mt-0.5">+</span>
-                    <span>Hyaluronic acid & antioxidant dermal infusion protocol</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-[#0D5C53] font-bold mt-0.5">+</span>
-                    <span>Specialist post-treatment barrier recovery plan</span>
-                  </li>
-                </ul>
+            <div className="p-6 sm:p-8 rounded-2xl bg-slate-900/70 border border-slate-800/90 hover:border-slate-700 transition-all space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center text-xl font-bold">
+                03
               </div>
-
-              <a
-                href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book the Clinical Skin & Facial Glow package (PKR 10,000). Please share available timings.`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full block py-4 text-center font-mono text-xs uppercase font-bold tracking-wider bg-stone-100 hover:bg-[#15191E] text-stone-900 hover:text-white border border-stone-300 transition-colors"
-              >
-                Book Facial Session →
-              </a>
+              <h4 className="font-serif text-2xl font-bold text-white">Transparent, Fixed Fees</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                No hidden clinic fees, surprise x-ray charges, or vague estimations. You receive a complete transparent estimate on WhatsApp before any work begins.
+              </p>
             </div>
-
           </div>
-
         </div>
       </section>
 
-      {/* 8. SECTION 05: COMMON PATIENT QUESTIONS (Clean Accordion) */}
-      <section className="border-b border-stone-200 py-16 px-4 sm:px-8 bg-[#F4F0EA]">
-        <div className="max-w-4xl mx-auto">
-          
-          <div className="mb-10 text-left">
-            <span className="font-mono text-xs text-[#0D5C53] uppercase tracking-widest block mb-1">
-              // TRANSPARENT CLINICAL ANSWERS
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-normal text-stone-900">
-              Frequently Asked Questions
-            </h2>
+      {/* 3-STEP PROCESS SECTION */}
+      <section id="protocol" className="py-16 sm:py-20 border-b border-slate-800 bg-[#0B1120]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mb-12">
+            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block mb-2">Zero Anxiety Journey</span>
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white">How Your Smile Transformation Works</h3>
+            <p className="text-slate-400 text-sm sm:text-base mt-2">No goopy impression trays. No weeks of waiting.</p>
           </div>
 
-          <div className="border-t border-stone-300 divide-y divide-stone-300 font-mono">
-            {[
-              {
-                q: "Is teeth whitening painful? Will my teeth hurt afterwards?",
-                a: "No. Traditional bleaching methods often dehydrate the tooth causing electric nerve shocks. Our system combines calibrated cold laser light with mineral desensitizers applied immediately during the session, making the procedure pain-free for over 95% of patients."
-              },
-              {
-                q: "How does booking on WhatsApp work? Who actually replies?",
-                a: "When you tap any WhatsApp link on this site, you connect directly with our patient coordination desk at the clinic. We immediately check our real-time operatory calendar and lock in your preferred time slot with zero automated bot delays."
-              },
-              {
-                q: "What is the difference between composite bonding and porcelain veneers?",
-                a: "Composite bonding is sculpted chairside directly onto your teeth in a single appointment, making it an affordable, immediate fix for chips and minor gaps. Porcelain veneers are custom-milled Zirconia or E-Max shells fabricated in a dental laboratory for maximum longevity and stain resistance."
-              },
-              {
-                q: "How clean and sterile is the facility?",
-                a: "We adhere to hospital-grade sterilization protocols. Every single handpiece and instrument is processed through a Class-B medical vacuum autoclave with chemical indicator strips verifying complete sterility prior to every patient appointment."
-              }
-            ].map((faq, idx) => (
-              <div key={idx} className="py-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 sm:p-7 rounded-2xl bg-slate-900 border border-slate-800 relative">
+              <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-3">Step 1</div>
+              <h4 className="font-serif text-xl font-bold text-white mb-2">3D Digital Optical Scan</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                An ultra-fast optical wand records 6,000 frames per second to digitally capture your bite in 3 minutes. Zero gag reflex.
+              </p>
+            </div>
+
+            <div className="p-6 sm:p-7 rounded-2xl bg-slate-900 border border-slate-800 relative">
+              <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-3">Step 2</div>
+              <h4 className="font-serif text-xl font-bold text-white mb-2">Live Realistic Smile Preview</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                See your new smile on screen before anything starts. Review and approve tooth alignment, shape, and natural color shade.
+              </p>
+            </div>
+
+            <div className="p-6 sm:p-7 rounded-2xl bg-slate-900 border border-slate-800 relative">
+              <div className="text-xs font-bold text-teal-400 uppercase tracking-wider mb-3">Step 3</div>
+              <h4 className="font-serif text-xl font-bold text-white mb-2">Painless Single-Visit Care</h4>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Relax in ergonomic memory foam chairs with soothing music. Leave the clinic on the same day with an immediate visible transformation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TREATMENTS & PRICING MENU */}
+      <section id="services" className="py-16 sm:py-24 bg-[#0F172A] border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block mb-2">Transparent Treatment Packages</span>
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white">Popular Clinical Procedures</h3>
+            <p className="text-slate-400 text-sm sm:text-base mt-2">Instant booking via WhatsApp with upfront confirmed pricing.</p>
+
+            {/* Filter buttons */}
+            <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
+              {[
+                { id: "all", label: "All Treatments" },
+                { id: "dental", label: "Teeth Whitening" },
+                { id: "cosmetic", label: "Veneers & Aligners" },
+                { id: "aesthetic", label: "Facial Care" },
+              ].map(cat => (
                 <button
-                  onClick={() => toggleFaq(idx)}
-                  className="w-full text-left flex items-start justify-between gap-4 text-sm sm:text-base font-bold text-stone-900 hover:text-[#0D5C53] transition-colors"
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all ${
+                    activeCategory === cat.id 
+                      ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/20" 
+                      : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                  }`}
                 >
-                  <span className="font-sans leading-snug">{faq.q}</span>
-                  <span className="text-[#0D5C53] font-mono text-sm shrink-0">
-                    {activeFaq === idx ? '[-]' : '[+]'}
-                  </span>
+                  {cat.label}
                 </button>
-                {activeFaq === idx && (
-                  <p className="mt-3 text-xs sm:text-sm text-stone-600 leading-relaxed font-sans max-w-2xl">
-                    {faq.a}
-                  </p>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {filteredTreatments.map((item) => (
+              <div 
+                key={item.id}
+                className={`rounded-2xl p-6 sm:p-8 flex flex-col justify-between transition-all relative ${
+                  item.popular 
+                    ? "bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-teal-500 shadow-xl shadow-teal-950/50" 
+                    : "bg-slate-900/80 border border-slate-800 hover:border-slate-700"
+                }`}
+              >
+                {item.popular && (
+                  <div className="absolute -top-3.5 right-6 bg-teal-500 text-slate-950 text-[11px] font-bold uppercase tracking-wider py-1 px-3 rounded-full shadow-md">
+                    Most Requested
+                  </div>
                 )}
+
+                <div>
+                  <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
+                    <span className="uppercase tracking-wider font-semibold text-teal-400">{item.category}</span>
+                    <span>{item.time}</span>
+                  </div>
+
+                  <h4 className="font-serif text-2xl font-bold text-white mb-2">{item.name}</h4>
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6">{item.desc}</p>
+
+                  <div className="py-4 border-y border-slate-800/80 mb-6">
+                    <div className="text-3xl font-extrabold text-white">{item.price}</div>
+                    {item.priceNote && <div className="text-xs text-slate-400 mt-1">{item.priceNote}</div>}
+                  </div>
+
+                  <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300 mb-8">
+                    {item.features.map((feat, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <span className="text-teal-400 font-bold mt-0.5">✓</span>
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <a
+                  href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book ${item.name} (${item.price}). Please share earliest available slots.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full py-3.5 px-4 rounded-xl text-center text-xs sm:text-sm font-bold transition-all ${
+                    item.popular
+                      ? "bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-lg shadow-teal-500/25"
+                      : "bg-slate-800 hover:bg-slate-700 text-white"
+                  }`}
+                >
+                  Book on WhatsApp →
+                </a>
               </div>
             ))}
           </div>
@@ -572,56 +480,181 @@ export default function DentalSampleSite() {
         </div>
       </section>
 
-      {/* 9. LOCATION TERMINAL & WHATSAPP CONCIERGE FOOTER */}
-      <footer id="location" className="bg-[#15191E] text-white py-16 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      {/* FACILITY & REAL OUTCOME GALLERY */}
+      <section id="facility" className="py-16 sm:py-20 bg-[#0B1120] border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block mb-2">Facility & Outcomes</span>
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white">Our Modern Clinic & Suites</h3>
+            <p className="text-slate-400 text-sm mt-2">Private operatories designed for sterility, tranquility, and safety.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 group border border-slate-800 bg-slate-900">
+              <img 
+                src="/images/smile-hero.jpg" 
+                alt="Teeth whitening smile result" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-5 flex flex-col justify-end">
+                <span className="text-teal-400 text-xs font-bold uppercase tracking-wider">Clinical Result</span>
+                <h5 className="font-serif text-lg font-bold text-white">Laser Whitening</h5>
+                <p className="text-slate-300 text-xs mt-1">Stain-free radiance achieved in 45 minutes.</p>
+              </div>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 group border border-slate-800 bg-slate-900">
+              <img 
+                src="/images/modern-operatory.jpg" 
+                alt="Modern dental operatory" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-5 flex flex-col justify-end">
+                <span className="text-teal-400 text-xs font-bold uppercase tracking-wider">Operatory Suite</span>
+                <h5 className="font-serif text-lg font-bold text-white">Tranquil Suite</h5>
+                <p className="text-slate-300 text-xs mt-1">Ergonomic memory foam and HEPA filtration.</p>
+              </div>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 group border border-slate-800 bg-slate-900">
+              <img 
+                src="/images/clinical-procedure.jpg" 
+                alt="Delicate dental procedure" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-5 flex flex-col justify-end">
+                <span className="text-teal-400 text-xs font-bold uppercase tracking-wider">Precision Care</span>
+                <h5 className="font-serif text-lg font-bold text-white">High Magnification</h5>
+                <p className="text-slate-300 text-xs mt-1">3.5x optical loupe accuracy on all work.</p>
+              </div>
+            </div>
+
+            <div className="relative rounded-2xl overflow-hidden h-72 sm:h-80 group border border-slate-800 bg-slate-900">
+              <img 
+                src="/images/specialist-doctor.jpg" 
+                alt="Dental doctor ready for consultation" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-5 flex flex-col justify-end">
+                <span className="text-teal-400 text-xs font-bold uppercase tracking-wider">Consultation</span>
+                <h5 className="font-serif text-lg font-bold text-white">Senior Doctors</h5>
+                <p className="text-slate-300 text-xs mt-1">Dedicated one-on-one specialist exam.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ ACCORDION */}
+      <section id="faq" className="py-16 sm:py-20 bg-[#0F172A] border-b border-slate-800">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block mb-2">Got Questions?</span>
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-white">Frequently Asked Questions</h3>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              {
+                q: "Is teeth whitening painful? Will my teeth feel sensitive?",
+                a: "No. Traditional bleaching methods dehydrate the tooth causing electric shocks. Our advanced cold laser system uses protective mineral desensitizers applied simultaneously, making it pain-free for over 95% of patients."
+              },
+              {
+                q: "How does booking on WhatsApp work? Who actually replies?",
+                a: "When you tap any WhatsApp button, you connect directly with our clinic's desk coordinator in Islamabad. We quickly check our schedule and confirm your preferred slot without annoying bots or delays."
+              },
+              {
+                q: "What is the difference between composite bonding and porcelain veneers?",
+                a: "Composite bonding is hand-crafted chairside in a single appointment, perfect for chips and minor gaps. Porcelain veneers are laboratory-milled ceramic shells engineered for maximum long-term durability and stain resistance."
+              },
+              {
+                q: "How strict are your sterilization standards?",
+                a: "We adhere strictly to hospital-grade standards. Every instrument is sealed in sterile pouches and sanitized through a Class-B vacuum autoclave with chemical indicator test strips verified before every appointment."
+              }
+            ].map((faq, idx) => (
+              <div 
+                key={idx} 
+                className="rounded-2xl border border-slate-800 bg-slate-900 overflow-hidden transition-all"
+              >
+                <button
+                  onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 text-white hover:text-teal-400 transition-colors"
+                >
+                  <span className="font-semibold text-sm sm:text-base leading-snug">{faq.q}</span>
+                  <span className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-teal-400 font-bold shrink-0">
+                    {activeFaq === idx ? "−" : "+"}
+                  </span>
+                </button>
+                {activeFaq === idx && (
+                  <div className="px-5 pb-5 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-slate-800/80 pt-3">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER & LOCATION */}
+      <footer className="bg-[#0B1120] text-slate-300 py-12 sm:py-16 px-4 sm:px-8 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
           
-          <div className="lg:col-span-6 space-y-4 text-left">
-            <span className="font-mono text-xs text-teal-300 uppercase tracking-widest block">
-              // DIRECT CONSULTATION
-            </span>
-            <h2 className="font-serif text-4xl sm:text-5xl font-normal text-white leading-tight">
-              Begin Your Smile & <br />
-              <span className="italic text-teal-300">Facial Architecture</span> Today.
-            </h2>
-            <p className="text-stone-400 text-xs sm:text-sm font-sans max-w-md leading-relaxed">
-              Skip receptionist phone tags. Message our direct clinical coordination desk on WhatsApp to confirm your preferred consultation slot.
+          <div className="md:col-span-6 space-y-4">
+            <h4 className="font-serif text-2xl sm:text-3xl font-bold text-white leading-tight">
+              {config.clinic}
+            </h4>
+            <p className="text-slate-400 text-sm max-w-md leading-relaxed">
+              Modern dental care and clinical facial aesthetics in {config.city}. Experience world-class treatment without fear or unexpected fees.
             </p>
             <div className="pt-2">
               <a
-                href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book an appointment with your senior consultant.`)}
+                href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to schedule an appointment.`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-[#0D5C53] hover:bg-teal-500 text-white font-mono text-xs uppercase font-bold tracking-widest py-4 px-8 transition-colors shadow-lg"
+                className="inline-flex items-center gap-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg transition-all"
               >
-                Message on WhatsApp in 1 Click →
+                <span>Book Instant Consultation</span>
+                <span>→</span>
               </a>
             </div>
           </div>
 
-          <div className="lg:col-span-6 border border-stone-800 bg-black/40 p-6 sm:p-8 font-mono text-xs space-y-3">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-800">
-              <span className="text-stone-400 uppercase text-[10px]">CLINICAL LOCATION TERMINAL</span>
-              <span className="text-teal-400 font-bold text-[10px]">OPERATIONAL</span>
-            </div>
-            <div className="space-y-1.5 text-stone-300 text-[11px] sm:text-xs font-sans">
-              <p className="text-white font-bold text-sm font-mono">{config.clinic}</p>
-              <p>Main Boulevard, Sector F-6 / G-9 Commercial, {config.area}</p>
-              <p>
-                TELEPHONE: <a href={`tel:${config.phone.replace(/\s+/g, "")}`} className="text-teal-300 hover:underline">{config.phone}</a>
-              </p>
-              <p>HOURS: {config.hours} (Sunday by appointment)</p>
-              <p className="text-stone-500 text-[10px] pt-1 font-mono">DEDICATED PATIENT PARKING ON-SITE</p>
-            </div>
+          <div className="md:col-span-6 rounded-2xl bg-slate-900 border border-slate-800 p-6 space-y-3 text-xs sm:text-sm">
+            <div className="text-white font-bold text-base mb-1">Clinic Contact & Location</div>
+            <p className="text-slate-300"><strong className="text-slate-200">Address:</strong> {config.area}</p>
+            <p className="text-slate-300">
+              <strong className="text-slate-200">Phone:</strong>{" "}
+              <a href={`tel:${config.phone.replace(/\s+/g, "")}`} className="text-teal-400 hover:underline">{config.phone}</a>
+            </p>
+            <p className="text-slate-300"><strong className="text-slate-200">Hours:</strong> {config.hours}</p>
+            <p className="text-slate-500 text-xs pt-1">Dedicated Patient Parking Available On-Site</p>
           </div>
 
         </div>
 
-        <div className="max-w-7xl mx-auto pt-12 mt-12 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between font-mono text-[10px] text-stone-500 gap-3 text-center sm:text-left">
-          <span>{config.clinic} // ALL RIGHTS RESERVED</span>
-          <span>STRICT ISO STERILIZATION PROTOCOLS FOLLOWED</span>
+        <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
+          <span>© {new Date().getFullYear()} {config.clinic}. All rights reserved.</span>
+          <span>Class-B Hospital-Grade Sterilization Protocols</span>
         </div>
       </footer>
+
+      {/* MOBILE FLOATING WHATSAPP BAR (Always accessible on phones) */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden bg-slate-950/95 backdrop-blur-md border-t border-slate-800 p-3">
+        <a
+          href={buildWhatsAppLink(`Hi ${config.clinic}! I'd like to book an appointment.`)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2.5 bg-teal-500 text-slate-950 font-bold text-sm py-3 px-4 rounded-xl shadow-lg shadow-teal-500/20 active:scale-[0.98] transition-transform"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>Book Appointment via WhatsApp</span>
+        </a>
+      </div>
 
     </div>
   );
