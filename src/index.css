@@ -20,6 +20,10 @@ body {
   background-color: #FFFFFF;
   color: #0F172A;
   overflow-x: hidden;
+  /* Elegant, subtle dental clinic micro-dot pattern */
+  background-image: radial-gradient(rgba(15, 118, 110, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: -19px -19px;
 }
 
 h1, h2, h3, .font-serif {
